@@ -1,20 +1,14 @@
-import pyodbc
 
-SERVER = r"Bolligarla\SQLEXPRESS"
-DATABASE = "StockFlowDB"
+import sqlite3
+from pathlib import Path
 
-CONNECTION_STRING = (
-    "DRIVER={ODBC Driver 18 for SQL Server};"
-    f"SERVER={SERVER};"
-    f"DATABASE={DATABASE};"
-    "Trusted_Connection=yes;"
-    "TrustServerCertificate=yes;"
-)
-
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATABASE_PATH = BASE_DIR / "stockflow.db"
 
 def get_connection():
-    return pyodbc.connect(CONNECTION_STRING)
-
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+    return connection
 
 def get_db():
     connection = get_connection()

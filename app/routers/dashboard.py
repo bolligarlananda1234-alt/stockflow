@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends
 from app.database import get_connection
 from app.routers.products import get_current_user
@@ -37,9 +38,9 @@ def get_dashboard(user=Depends(get_current_user)):
         result = cursor.fetchone()
 
         return {
-            "total_products": result[0],
-            "total_quantity": result[1],
-            "low_stock_products": result[2]
+            "total_products": result["total_products"],
+            "total_quantity": result["total_quantity"],
+            "low_stock_products": result["low_stock_products"]
         }
 
     finally:

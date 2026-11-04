@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, Field
 from app.database import get_connection
@@ -69,6 +70,7 @@ def verify_password(password: str, stored_hash: str) -> bool:
             actual_hash,
             base64.b64decode(expected_hash)
         )
+
     except (ValueError, TypeError):
         return False
 
@@ -110,13 +112,12 @@ def register_user(data: RegisterRequest):
         cursor.execute(
             """
             INSERT INTO Organizations (organization_name)
-            OUTPUT INSERTED.organization_id
             VALUES (?)
             """,
             (data.organization_name,)
         )
 
-        organization_id = cursor.fetchone()[0]
+        organization_id = cursor.lastrowid
 
         cursor.execute(
             """
@@ -133,7 +134,6 @@ def register_user(data: RegisterRequest):
             """
             INSERT INTO Users
             (organization_id, full_name, email, password_hash)
-            OUTPUT INSERTED.user_id
             VALUES (?, ?, ?, ?)
             """,
             (
@@ -144,7 +144,8 @@ def register_user(data: RegisterRequest):
             )
         )
 
-        user_id = cursor.fetchone()[0]
+        user_id = cursor.lastrowid
+
         connection.commit()
 
         return {
@@ -158,8 +159,9 @@ def register_user(data: RegisterRequest):
         connection.rollback()
         raise
 
-    except Exception:
+    except Exception as error:
         connection.rollback()
+        print("Registration error:", error)
         raise HTTPException(
             status_code=500,
             detail="Registration failed"
@@ -189,7 +191,7 @@ def login_user(data: LoginRequest):
         user = cursor.fetchone()
 
         if not user or not verify_password(
-            data.password, user.password_hash
+            data.password, user["password_hash"]
         ):
             raise HTTPException(
                 status_code=401,
@@ -197,8 +199,8 @@ def login_user(data: LoginRequest):
             )
 
         access_token = create_access_token(
-            user.user_id,
-            user.organization_id
+            user["user_id"],
+            user["organization_id"]
         )
 
         return {
@@ -206,17 +208,18 @@ def login_user(data: LoginRequest):
             "access_token": access_token,
             "token_type": "bearer",
             "user": {
-                "user_id": user.user_id,
-                "organization_id": user.organization_id,
-                "full_name": user.full_name,
-                "email": user.email
+                "user_id": user["user_id"],
+                "organization_id": user["organization_id"],
+                "full_name": user["full_name"],
+                "email": user["email"]
             }
         }
 
     except HTTPException:
         raise
 
-    except Exception:
+    except Exception as error:
+        print("Login error:", error)
         raise HTTPException(
             status_code=500,
             detail="Login failed"

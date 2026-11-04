@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
@@ -6,6 +7,7 @@ from jose import jwt, JWTError
 from dotenv import load_dotenv
 from typing import Optional
 import os
+import sqlite3
 
 load_dotenv()
 
@@ -69,7 +71,6 @@ def add_product(
                 description, quantity, cost_price,
                 selling_price, low_stock_threshold
             )
-            OUTPUT INSERTED.product_id
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -84,7 +85,7 @@ def add_product(
             )
         )
 
-        product_id = cursor.fetchone()[0]
+        product_id = cursor.lastrowid
         connection.commit()
 
         return {
@@ -93,15 +94,16 @@ def add_product(
             "organization_id": organization_id
         }
 
+    except sqlite3.IntegrityError:
+        connection.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="SKU already exists in your organization"
+        )
+
     except Exception as error:
         connection.rollback()
-
-        if "UNIQUE KEY" in str(error).upper() or "DUPLICATE KEY" in str(error).upper():
-            raise HTTPException(
-                status_code=409,
-                detail="SKU already exists in your organization"
-            )
-
+        print("Add product error:", error)
         raise HTTPException(
             status_code=500,
             detail="Unable to add product"
@@ -147,14 +149,14 @@ def get_products(
 
         for row in rows:
             products.append({
-                "product_id": row.product_id,
-                "product_name": row.product_name,
-                "sku": row.sku,
-                "description": row.description,
-                "quantity": row.quantity,
-                "cost_price": float(row.cost_price),
-                "selling_price": float(row.selling_price),
-                "low_stock_threshold": row.low_stock_threshold
+                "product_id": row["product_id"],
+                "product_name": row["product_name"],
+                "sku": row["sku"],
+                "description": row["description"],
+                "quantity": row["quantity"],
+                "cost_price": float(row["cost_price"]),
+                "selling_price": float(row["selling_price"]),
+                "low_stock_threshold": row["low_stock_threshold"]
             })
 
         return {
@@ -232,15 +234,16 @@ def update_product(
         connection.rollback()
         raise
 
+    except sqlite3.IntegrityError:
+        connection.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="SKU already exists in your organization"
+        )
+
     except Exception as error:
         connection.rollback()
-
-        if "UNIQUE KEY" in str(error).upper() or "DUPLICATE KEY" in str(error).upper():
-            raise HTTPException(
-                status_code=409,
-                detail="SKU already exists in your organization"
-            )
-
+        print("Update product error:", error)
         raise HTTPException(
             status_code=500,
             detail="Unable to update product"
