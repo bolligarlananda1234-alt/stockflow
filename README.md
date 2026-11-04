@@ -1,2 +1,2 @@
 # stockflow
-Inventory management system using c and sql server
+SAAS Inventory management System Using Python,FastAPI and SQL server
