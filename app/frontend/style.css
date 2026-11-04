@@ -1,0 +1,124 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #101827, #243b55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 430px;
+}
+
+.brand {
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+}
+
+.brand h1 {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.brand p {
+    color: #cbd5e1;
+}
+
+.auth-card {
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabs button {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    color: #64748b;
+}
+
+.tabs button.active {
+    color: #2563eb;
+    border-bottom: 3px solid #2563eb;
+    font-weight: bold;
+}
+
+form h2 {
+    color: #172033;
+    margin-bottom: 8px;
+}
+
+form p {
+    color: #64748b;
+    margin-bottom: 22px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    margin-top: 15px;
+    color: #334155;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #2563eb;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #1d4ed8;
+}
+
+.hidden {
+    display: none;
+}
+
+#message {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}

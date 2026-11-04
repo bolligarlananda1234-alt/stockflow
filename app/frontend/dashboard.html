@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockFlow Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>StockFlow</h2>
+
+        <nav>
+            <a class="active" href="dashboard.html">Dashboard</a>
+            <a href="#products">Products</a>
+            <a href="#add-product">Add Product</a>
+        </nav>
+
+        <button id="logoutBtn">Logout</button>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1>Dashboard</h1>
+            <p>Welcome to your inventory management system.</p>
+        </header>
+
+        <section class="stats">
+            <div class="stat-card">
+                <h3>Total Products</h3>
+                <p id="totalProducts">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Quantity</h3>
+                <p id="totalQuantity">0</p>
+            </div>
+
+            <div class="stat-card warning">
+                <h3>Low Stock Products</h3>
+                <p id="lowStockProducts">0</p>
+            </div>
+        </section>
+
+        <section id="add-product" class="panel">
+            <h2>Add New Product</h2>
+
+            <form id="productForm">
+                <input type="text" id="productName"
+                    placeholder="Product Name" required>
+
+                <input type="text" id="sku"
+                    placeholder="SKU" required>
+
+                <input type="text" id="description"
+                    placeholder="Description">
+
+                <input type="number" id="quantity"
+                    placeholder="Quantity" min="0" required>
+
+                <input type="number" id="costPrice"
+                    placeholder="Cost Price" min="0" step="0.01" required>
+
+                <input type="number" id="sellingPrice"
+                    placeholder="Selling Price" min="0" step="0.01" required>
+
+                <input type="number" id="threshold"
+                    placeholder="Low Stock Threshold" min="0" value="5" required>
+
+                <button type="submit">Add Product</button>
+            </form>
+
+            <p id="productMessage"></p>
+        </section>
+
+        <section id="products" class="panel">
+            <h2>Product Inventory</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>SKU</th>
+                            <th>Quantity</th>
+                            <th>Cost Price</th>
+                            <th>Selling Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="productTable">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
